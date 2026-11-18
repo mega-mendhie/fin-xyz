@@ -37,6 +37,6 @@ class TransactionServiceTest {
     @Test
     fun `returns empty list of transactions`(){
         val transactionService = TransactionService()
-        assertEquals(0, transactionService.getAll().size)
+        assertEquals(emptyList<Transaction>(), transactionService.getAll())
     }
 }

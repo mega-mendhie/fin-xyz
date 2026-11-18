@@ -7,8 +7,9 @@ class TransactionService {
     //in-app memory
     private val transactions = mutableListOf<Transaction>()
 
-    fun createTransaction(transaction: Transaction): Transaction?{
-        return if(transactions.add(transaction)) transaction else null
+    fun createTransaction(transaction: Transaction): Transaction {
+        transactions.add(transaction)
+        return transaction
     }
 
     fun getAll(): List<Transaction> {
