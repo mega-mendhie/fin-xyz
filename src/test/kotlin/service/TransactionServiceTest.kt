@@ -15,9 +15,7 @@ class TransactionServiceTest {
     @Test
     fun `service creates a new transaction`(){
         val transactionService = TransactionService()
-        transactionService.createTransaction(transaction)
-
-        assertEquals(1, transactionService.transactions.size)
+        assertEquals(transaction, transactionService.createTransaction(transaction))
     }
 
     @Test
@@ -29,10 +27,16 @@ class TransactionServiceTest {
         assertEquals(2, transactionService.getAll().size)
     }
 
+    @Test
     fun `service returns exact transactions`(){
         val transactionService = TransactionService()
         transactionService.createTransaction(transaction)
-        val result = transactionService.getAll()
-        assertEquals(transaction, result.first())
+        assertEquals(transaction, transactionService.getAll().first())
+    }
+
+    @Test
+    fun `returns empty list of transactions`(){
+        val transactionService = TransactionService()
+        assertEquals(0, transactionService.getAll().size)
     }
 }

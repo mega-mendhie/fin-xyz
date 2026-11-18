@@ -1,4 +1,3 @@
-import com.sun.beans.introspect.PropertyInfo
 import domain.Transaction
 import service.TransactionService
 import java.util.UUID

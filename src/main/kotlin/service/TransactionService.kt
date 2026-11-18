@@ -5,10 +5,10 @@ import domain.Transaction
 class TransactionService {
 
     //in-app memory
-    val transactions = mutableListOf<Transaction>()
+    private val transactions = mutableListOf<Transaction>()
 
-    fun createTransaction(transaction: Transaction){
-        transactions.add(transaction)
+    fun createTransaction(transaction: Transaction): Transaction?{
+        return if(transactions.add(transaction)) transaction else null
     }
 
     fun getAll(): List<Transaction> {
