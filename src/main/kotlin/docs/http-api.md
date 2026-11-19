@@ -11,8 +11,7 @@
 
 
 **Endpoint 2** — Create transaction
-POST https://sqube.org/transactions
-1. GET https://sqube.org/health
+1. POST https://sqube.org/transactions
 2. Required headers: Content-Type, Accept
 3. {
    "amount": 60000,
@@ -29,8 +28,7 @@ POST https://sqube.org/transactions
 6. 400 Bad Request. The server cannot process the request; 404 Not Found. The requested URL or resource does not exist on the server; 405 Method Not Allowed. The HTTP method used (such as POST or DELETE) is not supported for that endpoint.
 
 **Endpoint 3** — Retrieve transactions
-GET https://sqube.org/transactions
-1. GET https://sqube.org/health
+1. GET https://sqube.org/transactions
 2. Required headers: Content-Type, Accept
 3. None
 4. 200
