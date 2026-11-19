@@ -27,12 +27,11 @@ Base Url: https://api.sqube.org
    "description": "For bread",
    "accountId": "UU3hgjfj"
    }
-6. Possible error responses: 400 - Bad Request (The server cannot process the request); 401 - Unauthorized (Missing/Invalid Auth); 403 - User is authenticated but lacks permission; 404 - The specified account doesn't exist or isn't accessible; 405 - Method Not Allowed (The HTTP method used is not supported for that endpoint).
+6. Possible error responses: 400 - Bad Request (The server cannot process the request); 401 - Unauthorized (Missing/Invalid Auth); 403 - User is authenticated but lacks permission; 404 - The specified transaction doesn't exist or isn't accessible; 405 - Method Not Allowed (The HTTP method used is not supported for that endpoint).
 
 **Endpoint 3** — Retrieve transactions
 1. Method & path: GET /transactions
-2. Headers: {"Content-Type": "application/json",
-   "Accept": "application/json", "Authorization": "Bearer xyz123"}
+2. Headers: {"Accept": "application/json", "Authorization": "Bearer xyz123"}
 3. Sample Request Body: None
 4. Successful response status code; 200
 5. Sample Response Body: [{
@@ -51,7 +50,7 @@ Base Url: https://api.sqube.org
    
 Sample Empty Response Body:
    []
-6. Possible error responses: 400 - Bad Request (The server cannot process the request); 401 - Unauthorized (Missing/Invalid Auth); 403 - User is authenticated but lacks permission; 404 - The specified account doesn't exist or isn't accessible; 405 - Method Not Allowed (The HTTP method used is not supported for that endpoint).
+6. Possible error responses: 400 - Bad Request (The server cannot process the request); 401 - Unauthorized (Missing/Invalid Auth); 403 - User is authenticated but lacks permission; 404 - The specified transaction doesn't exist or isn't accessible; 405 - Method Not Allowed (The HTTP method used is not supported for that endpoint).
 
 
 
