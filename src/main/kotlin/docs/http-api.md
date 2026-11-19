@@ -1,38 +1,41 @@
 **Endpoint** 1 — Health check
-1. GET https://sqube.org/health
-2. Required headers: Content-Type, Accept
-3. None
-4. 200
-5. {
+1. Method & url: GET https://sqube.org/health
+2. Headers: {"Content-Type": "application/json",
+   "Accept": "application/json"}
+3. Sample Request Body: None
+4. Successful response status code: 200
+5. Sample Response Body: {
    "status": "UP"
    }
-6. 400 Bad Request. The server cannot process the request; 404 Not Found. The requested URL or resource does not exist on the server; 405 Method Not Allowed. The HTTP method used (such as POST or DELETE) is not supported for that endpoint.
+6. Possible error responses: 400 Bad Request. The server cannot process the request; 404 Not Found. The requested URL or resource does not exist on the server; 405 Method Not Allowed. The HTTP method used (such as POST or DELETE) is not supported for that endpoint.
 
 
 
 **Endpoint 2** — Create transaction
-1. POST https://sqube.org/transactions
-2. Required headers: Content-Type, Accept
-3. {
+1. Method & url: POST https://sqube.org/transactions
+2. Headers: {"Content-Type": "application/json",
+   "Accept": "application/json", "Authorization": "Bearer xyz123"}
+3. Sample Request Body: {
    "amount": 60000,
    "description": "For bread",
    "accountId": "UU3hgjfj"
    }
-4. 201
-5. {
+4. Successful response status code: 201
+5. Sample Response Body: {
    "id": "tnx123",
    "amount": 60000,
    "description": "For bread",
    "accountId": "UU3hgjfj"
    }
-6. 400 Bad Request. The server cannot process the request; 404 Not Found. The requested URL or resource does not exist on the server; 405 Method Not Allowed. The HTTP method used (such as POST or DELETE) is not supported for that endpoint.
+6. Possible error responses: 400 Bad Request. The server cannot process the request; 401 Unauthorized (Missing/Invalid Auth); 404 Not Found. The requested URL or resource does not exist on the server; 405 Method Not Allowed. The HTTP method used (such as POST or DELETE) is not supported for that endpoint.
 
 **Endpoint 3** — Retrieve transactions
-1. GET https://sqube.org/transactions
-2. Required headers: Content-Type, Accept
-3. None
-4. 200
-5. [{
+1. Method & url: GET https://sqube.org/transactions
+2. Headers: {"Content-Type": "application/json",
+   "Accept": "application/json", "Authorization": "Bearer xyz123"}
+3. Sample Request Body: None
+4. Successful response status code; 200
+5. Sample Response Body: [{
    
    "id": "tnx123",
    "amount": 60000,
@@ -45,7 +48,7 @@
    "description": "For bread",
    "accountId": "UU3hgjfj"
    }]
-6. 400 Bad Request. The server cannot process the request; 404 Not Found. The requested URL or resource does not exist on the server; 405 Method Not Allowed. The HTTP method used (such as POST or DELETE) is not supported for that endpoint.
+6. Possible error responses: 400 Bad Request. The server cannot process the request; 401 Unauthorized (Missing/Invalid Auth); 404 Not Found. The requested URL or resource does not exist on the server; 405 Method Not Allowed. The HTTP method used (such as POST or DELETE) is not supported for that endpoint.
 
 
 
