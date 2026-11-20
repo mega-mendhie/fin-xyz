@@ -1,10 +1,7 @@
-import domain.Transaction
-import service.TransactionService
-import java.util.UUID
+import server.FinanceHttpServer
 
 fun main() {
-    val transactionService = TransactionService()
-
+    /*val transactionService = TransactionService()
     transactionService.createTransaction(
         Transaction(
             id = UUID.randomUUID().toString(),
@@ -13,8 +10,10 @@ fun main() {
             accountId = "UU3hgjfj"
         )
     )
-
     println(
         transactionService.getAll()
-    )
+    )*/
+
+    val server = FinanceHttpServer(8080)
+    server.start()
 }
