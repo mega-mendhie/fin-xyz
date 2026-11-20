@@ -11,25 +11,25 @@ class FinanceHttpServer(val portNumber: Int = 8080){
 
     init{
         server.createContext("/health"){ exchange ->
-            exchange.use { exchange ->
-                if(exchange.requestURI.path != "/health"){
-                    exchange.sendResponseHeaders(404, -1)
+            exchange.use { ex ->
+                if(ex.requestURI.path != "/health"){
+                    ex.sendResponseHeaders(404, -1)
                     return@createContext
                 }
-                if(exchange.requestMethod == "GET"){
+                if(ex.requestMethod == "GET"){
 
                     // response body
                     val response = """{"status": "UP"}"""
                     val responseBytes = response.toByteArray(Charsets.UTF_8)
 
                     // response headers
-                    exchange.responseHeaders.add("Content-Type", "application/json")
-                    exchange.sendResponseHeaders(200, responseBytes.size.toLong())
-                    val responseBody = exchange.responseBody
+                    ex.responseHeaders.add("Content-Type", "application/json")
+                    ex.sendResponseHeaders(200, responseBytes.size.toLong())
+                    val responseBody = ex.responseBody
                     responseBody.use { it.write(responseBytes) }
                 } else{
-                    exchange.responseHeaders.add("Allow", "GET")
-                    exchange.sendResponseHeaders(405, -1)
+                    ex.responseHeaders.add("Allow", "GET")
+                    ex.sendResponseHeaders(405, -1)
                 }
             }
         }
