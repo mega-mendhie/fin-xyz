@@ -3,8 +3,11 @@ package server
 import com.sun.net.httpserver.HttpServer
 import java.net.InetSocketAddress
 
-class FinanceHttpServer(portNumber: Int = 8080){
-    var server: HttpServer = HttpServer.create(InetSocketAddress(portNumber), 0)
+class FinanceHttpServer(val portNumber: Int = 8080){
+    private val server: HttpServer = HttpServer.create(
+        InetSocketAddress("127.0.0.1", portNumber),
+        0
+    )
 
     init{
         server.createContext("/health"){ exchange ->
@@ -20,12 +23,12 @@ class FinanceHttpServer(portNumber: Int = 8080){
 
                 // response headers
                 exchange.responseHeaders.add("Content-Type", "application/json")
-                exchange.sendResponseHeaders(200, response.length.toLong())
+                exchange.sendResponseHeaders(200, responseBytes.size.toLong())
                 val responseBody = exchange.responseBody
-                responseBody.write(responseBytes)
-                responseBody.close()
+                responseBody.use { it.write(responseBytes) }
             }
             else{
+                exchange.responseHeaders.add("Allow", "GET")
                 exchange.sendResponseHeaders(405, -1)
             }
         }
@@ -34,6 +37,10 @@ class FinanceHttpServer(portNumber: Int = 8080){
 
     fun start(){
         server.start()
-        println("Server running on http://localhost:8080/health")
+        println("Server running on http://localhost:${portNumber}/health")
+    }
+
+    fun stop(delaySeconds: Int = 0){
+        server.stop(delaySeconds)
     }
 }
