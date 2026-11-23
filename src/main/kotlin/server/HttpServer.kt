@@ -58,7 +58,10 @@ class FinanceHttpServer(portNumber: Int = 8080){
                     }
                     "POST" -> {
                         val contentType = ex.requestHeaders.getFirst("Content-Type") ?: ""
-                        if(!contentType.startsWith("application/json", ignoreCase = true)){
+                        if(!contentType.substringBefore(";")
+                            .trim()
+                            .equals("application/json", ignoreCase = true)
+                            ){
                             val response = """{"error": "Unsupported Media Type"}"""
                             val responseStream = response.toByteArray(Charsets.UTF_8)
                             ex.responseHeaders.add("Content-Type", "application/json")
