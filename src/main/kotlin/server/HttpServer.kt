@@ -1,13 +1,20 @@
 package server
 
 import com.sun.net.httpserver.HttpServer
+import domain.Transaction
+import domain.TransactionResponse
+import service.TransactionService
+import tools.jackson.core.JacksonException
+import tools.jackson.module.kotlin.jacksonObjectMapper
 import java.net.InetSocketAddress
 
-class FinanceHttpServer(val portNumber: Int = 8080){
+class FinanceHttpServer(portNumber: Int = 8080){
     private val server: HttpServer = HttpServer.create(
         InetSocketAddress("127.0.0.1", portNumber),
         0
     )
+    private val txService = TransactionService()
+    private val mapper = jacksonObjectMapper()
 
     init{
         server.createContext("/health"){ exchange ->
@@ -33,12 +40,82 @@ class FinanceHttpServer(val portNumber: Int = 8080){
                 }
             }
         }
+
+        server.createContext("/transactions"){ exchange ->
+            exchange.use { ex ->
+                if(ex.requestURI.path != "/transactions"){
+                    ex.sendResponseHeaders(404, -1)
+                    return@createContext
+                }
+
+                when(ex.requestMethod){
+                    "GET" -> {
+                        val response = txService.getAll()
+                        val mappedResponse = mapper.writeValueAsBytes(TransactionResponse(
+                            message = "Retrieved successfully",
+                            transactions = response
+                        ))
+                        ex.responseHeaders.add("Content-Type", "application/json")
+                        ex.sendResponseHeaders(200, mappedResponse.size.toLong())
+                        ex.responseBody.use{it.write(mappedResponse)}
+                    }
+                    "POST" -> {
+                        val contentType = ex.requestHeaders.getFirst("Content-Type") ?: ""
+                        if(!contentType.startsWith("application/json", ignoreCase = true)){
+                            val response = """{"error": "Unsupported Media Type"}"""
+                            val responseStream = response.toByteArray(Charsets.UTF_8)
+                            ex.responseHeaders.add("Content-Type", "application/json")
+                            ex.sendResponseHeaders(415, responseStream.size.toLong())
+                            ex.responseBody.use { it.write(responseStream) }
+                            return@createContext
+                        }
+                        val body = ex.requestBody
+                        try {
+                            val transaction = mapper.readValue(body, Transaction::class.java)
+                            val response = txService.createTransaction(transaction)
+                            val mappedResponse = mapper.writeValueAsBytes(TransactionResponse(
+                                message = "Transaction created",
+                                transactions = response
+                            ))
+                            ex.responseHeaders.add("Content-Type", "application/json")
+                            ex.sendResponseHeaders(201, mappedResponse.size.toLong())
+                            ex.responseBody.use{it.write(mappedResponse)}
+                        }
+                        catch (e: IllegalArgumentException){
+                            val response = """{"error": "Invalid transaction data"}"""
+                            val responseStream = response.toByteArray(Charsets.UTF_8)
+                            ex.responseHeaders.add("Content-Type", "application/json")
+                            ex.sendResponseHeaders(400, responseStream.size.toLong())
+                            ex.responseBody.use { it.write(responseStream) }
+                        }
+                        catch (e: JacksonException){
+                            val response = """{"error": "Unsupported Media Type"}"""
+                            val responseStream = response.toByteArray(Charsets.UTF_8)
+                            ex.responseHeaders.add("Content-Type", "application/json")
+                            ex.sendResponseHeaders(400, responseStream.size.toLong())
+                            ex.responseBody.use { it.write(responseStream) }
+                        }
+                        catch (e: Exception){
+                            val response = """{"error": "Internal Server Error"}"""
+                            val responseStream = response.toByteArray(Charsets.UTF_8)
+                            ex.responseHeaders.add("Content-Type", "application/json")
+                            ex.sendResponseHeaders(500, responseStream.size.toLong())
+                            ex.responseBody.use { it.write(responseStream) }
+                        }
+                    }
+                    else -> {
+                        ex.responseHeaders.add("Allow", "GET")
+                        ex.responseHeaders.add("Allow", "POST")
+                        ex.sendResponseHeaders(405, -1)
+                    }
+                }
+            }
+        }
         server.executor = null
     }
 
     fun start(){
         server.start()
-        println("Server running on http://localhost:${portNumber}/health")
     }
 
     fun stop(delaySeconds: Int = 0){
