@@ -51,10 +51,7 @@ class FinanceHttpServer(portNumber: Int = 8080){
                 when(ex.requestMethod){
                     "GET" -> {
                         val response = txService.getAll()
-                        val mappedResponse = mapper.writeValueAsBytes(TransactionResponse(
-                            message = "Retrieved successfully",
-                            transactions = response
-                        ))
+                        val mappedResponse = mapper.writeValueAsBytes(response)
                         ex.responseHeaders.add("Content-Type", "application/json")
                         ex.sendResponseHeaders(200, mappedResponse.size.toLong())
                         ex.responseBody.use{it.write(mappedResponse)}
@@ -89,7 +86,7 @@ class FinanceHttpServer(portNumber: Int = 8080){
                             ex.responseBody.use { it.write(responseStream) }
                         }
                         catch (e: JacksonException){
-                            val response = """{"error": "Unsupported Media Type"}"""
+                            val response = """{"error": "Invalid JSON request body"}"""
                             val responseStream = response.toByteArray(Charsets.UTF_8)
                             ex.responseHeaders.add("Content-Type", "application/json")
                             ex.sendResponseHeaders(400, responseStream.size.toLong())
