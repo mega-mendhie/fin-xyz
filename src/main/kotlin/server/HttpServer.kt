@@ -70,16 +70,18 @@ class FinanceHttpServer(portNumber: Int = 8080){
                         try {
                             val transaction = mapper.readValue(body, Transaction::class.java)
                             val response = txService.createTransaction(transaction)
-                            val mappedResponse = mapper.writeValueAsBytes(TransactionResponse(
-                                message = "Transaction created",
-                                transactions = response
-                            ))
+                            val mappedResponse = mapper.writeValueAsBytes(
+                                TransactionResponse(
+                                    message = "Transaction created",
+                                    transaction = response
+                                )
+                            )
                             ex.responseHeaders.add("Content-Type", "application/json")
                             ex.sendResponseHeaders(201, mappedResponse.size.toLong())
                             ex.responseBody.use{it.write(mappedResponse)}
                         }
                         catch (e: IllegalArgumentException){
-                            val response = """{"error": "Invalid transaction data"}"""
+                            val response = """{"error": "Invalid transaction data: ${e.message}"}"""
                             val responseStream = response.toByteArray(Charsets.UTF_8)
                             ex.responseHeaders.add("Content-Type", "application/json")
                             ex.sendResponseHeaders(400, responseStream.size.toLong())
@@ -101,8 +103,7 @@ class FinanceHttpServer(portNumber: Int = 8080){
                         }
                     }
                     else -> {
-                        ex.responseHeaders.add("Allow", "GET")
-                        ex.responseHeaders.add("Allow", "POST")
+                        ex.responseHeaders.add("Allow", "GET, POST")
                         ex.sendResponseHeaders(405, -1)
                     }
                 }
