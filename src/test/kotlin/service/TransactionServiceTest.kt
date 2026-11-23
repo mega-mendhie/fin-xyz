@@ -3,6 +3,7 @@ package service
 import domain.Transaction
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.assertThrows
 
 class TransactionServiceTest {
     val transaction = Transaction(
@@ -37,6 +38,54 @@ class TransactionServiceTest {
     @Test
     fun `returns empty list of transactions`(){
         val transactionService = TransactionService()
+        assertEquals(emptyList<Transaction>(), transactionService.getAll())
+    }
+
+    @Test
+    fun `rejects transaction with non-positive amount`() {
+        val transactionService = TransactionService()
+        val invalidTransaction = transaction.copy(amount = 0)
+
+        assertThrows<IllegalArgumentException> {
+            transactionService.createTransaction(invalidTransaction)
+        }
+
+        assertEquals(emptyList<Transaction>(), transactionService.getAll())
+    }
+
+    @Test
+    fun `rejects transaction with blank Account ID`() {
+        val transactionService = TransactionService()
+        val invalidTransaction = transaction.copy(accountId = " ")
+
+        assertThrows<IllegalArgumentException> {
+            transactionService.createTransaction(invalidTransaction)
+        }
+
+        assertEquals(emptyList<Transaction>(), transactionService.getAll())
+    }
+
+    @Test
+    fun `rejects transaction with blank Transaction ID`() {
+        val transactionService = TransactionService()
+        val invalidTransaction = transaction.copy(id = " ")
+
+        assertThrows<IllegalArgumentException> {
+            transactionService.createTransaction(invalidTransaction)
+        }
+
+        assertEquals(emptyList<Transaction>(), transactionService.getAll())
+    }
+
+    @Test
+    fun `rejects transaction with blank description`() {
+        val transactionService = TransactionService()
+        val invalidTransaction = transaction.copy(description = " ")
+
+        assertThrows<IllegalArgumentException> {
+            transactionService.createTransaction(invalidTransaction)
+        }
+
         assertEquals(emptyList<Transaction>(), transactionService.getAll())
     }
 }
